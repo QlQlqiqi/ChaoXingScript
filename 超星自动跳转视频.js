@@ -17,13 +17,14 @@
 // - 点击自己想看的那个课程章节，然后刷新，之后不能再手动点击别的章节，以保证脚本的正常运行
 // - 如果视频长时间不能播放，则跳到下一个视频，最后一个将会跳到第一个（刷时长）
 // - 建议配合 https://greasyfork.org/en/scripts/419816 使用（刷章节测试和完成度）
+// - 本脚本使用时请关闭其他脚本
 
 (async function() {
   'use strict';
 
   let settings = {
     // 视频加载的时间，单位 ms
-    videoLoadTime: 3000,
+    videoLoadTime: 5000,
     // 如果视频长时间不播放，则自动跳转到下一个视频，单位 ms
     videoTroublemWaitTime: 3000,
     // 跳过的名称
@@ -94,9 +95,17 @@
       await new Promise((resolve) => {
         // 跳转后 settigns.videoLoadTime 开始
         setTimeout(async () => {
+          
+          // 跳过 settings.jumpTitle
+          if($('.prev_title')[0].title === settings.jumpTitle) {
+            resolve();
+            return;
+          }
+          
           // 选中播放器 div 
           let videoXML = $(window.frames["0"].frames["0"])[0].document.childNodes[1];
           videoDiv = videoXML.childNodes[videoXML.childNodes.length - 1].childNodes[8].childNodes[0];
+          console.log(videoDiv)
           
           // 如果视频处于暂停状态，点击开始
           let timeId = setInterval(() => {
@@ -104,9 +113,8 @@
               videoDiv.childNodes[6].childNodes[0].click()
           }, 1000);
           
-          // 跳过 settings.jumpTitle
-          if($('.prev_title')[0].title !== settings.jumpTitle)
-            await finishTask();
+          // 开始
+          await finishTask();
           
           clearInterval(timeId);
           resolve();
