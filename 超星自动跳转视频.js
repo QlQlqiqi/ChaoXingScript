@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         超星自动跳转视频
 // @namespace    http://tampermonkey.net/
-// @version      1.1.0
+// @version      1.1.1
 // @description  功能简陋的刷时长脚本
 // @author       QlQl
 // @match        *://*.chaoxing.com/*
@@ -16,7 +16,7 @@
 // description:
 // - 点击自己想看的那个课程章节，然后刷新，之后不能再手动点击别的章节，以保证脚本的正常运行
 // - 如果视频长时间不能播放，则跳到下一个视频，最后一个将会跳到第一个（刷时长）
-// - 建议配合 https://greasyfork.org/scripts/369625 或者 https://greasyfork.org/scripts/369625 使用（刷章节测试和完成度）
+// - 建议配合 https://greasyfork.org/en/scripts/419816 使用（刷章节测试和完成度）
 
 (async function() {
   'use strict';
@@ -95,7 +95,8 @@
         // 跳转后 settigns.videoLoadTime 开始
         setTimeout(async () => {
           // 选中播放器 div 
-          videoDiv = $(window.frames["0"].frames["0"])[0].document.childNodes[1].childNodes[3].childNodes[8].childNodes[0];
+          let videoXML = $(window.frames["0"].frames["0"])[0].document.childNodes[1];
+          videoDiv = videoXML.childNodes[videoXML.childNodes.length - 1].childNodes[8].childNodes[0];
           
           // 如果视频处于暂停状态，点击开始
           let timeId = setInterval(() => {
