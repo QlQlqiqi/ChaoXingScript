@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         超星自动跳转视频 + 查题
 // @namespace    http://tampermonkey.net/
-// @version      1.2.0
+// @version      1.2.1
 // @description  功能简陋的刷时长脚本 + 查题
 // @author       QlQl
 // @match        *://*.chaoxing.com/*
@@ -38,7 +38,7 @@
     // 自动答题的每道题目之间的间隔，单位 ms
     getAnswerTime: 1000,
     // 填写答案的时间
-    fillAnswerTime: 5000
+    fillAnswerTime: 55000
   };
 
   
@@ -104,13 +104,14 @@
       for(let i = 0; i < TiMus.length; i++) {
         let title = TiMus.eq(i).find('.clearfix div')[0].innerText.split('】')[1].slice(0, -3);
         let res = JSON.parse(await getAnswer(title));
+        TiMus.eq(i).find('.Zy_TItle').eq(0).append('<span style="font-size: 20px; color: red;">' + res.answer.split('\x01') + '</span>');
         
         // let select = selects.eq(i).find()
         // res.answer.split('\\x01').forEach(item => {
           
         // })
         
-        console.log(i, res.success, res.answer.split('\x01'));
+        // console.log(i, res.success, res.answer.split('\x01'));
         await new Promise(resolve => {
           setTimeout(() => {
             resolve();
